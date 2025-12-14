@@ -33,12 +33,13 @@ import {
   FaLock,
 } from "react-icons/fa";
 import logo from "../../images/logo.avif";
+import Sidebar from "../../Components/Sidebar";
 
 export default function Settings() {
   const navigate = useNavigate();
   const { refreshSettings } = useSettings();
   const token = localStorage.getItem("token");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Use shared Sidebar component; keep menu fixed
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"profile" | "admin" | "backup" | "personnel">("profile");
   const [currentUser, setCurrentUser] = useState<any>(null);
@@ -702,58 +703,8 @@ export default function Settings() {
 
   return (
     <div className="flex h-screen bg-gray-100" dir="ltr">
-      {/* Sidebar */}
-      <aside
-        className={`${
-          sidebarOpen ? "w-64" : "w-20"
-        } bg-gradient-to-b from-gray-900 to-gray-800 text-white transition-all duration-300 flex flex-col shadow-2xl`}
-      >
-        <div className="p-4 border-b border-gray-700">
-          <div className="flex items-center justify-between">
-            {sidebarOpen && (
-              <div className="flex items-center gap-2">
-                <img src={logo} alt="Dental Clinic" className="w-10 h-10 rounded-lg object-cover" />
-                <span className="font-bold text-lg">Dental Clinic</span>
-              </div>
-            )}
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
-            >
-              {sidebarOpen ? <FaTimes /> : <FaBars />}
-            </button>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-          {menuItems.map((item, index) => (
-            <a
-              key={index}
-              href={item.link}
-              className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition-all duration-200 group"
-            >
-              <span className={item.color}>{item.icon}</span>
-              {sidebarOpen && (
-                <span className="text-sm font-medium group-hover:text-white">
-                  {item.title}
-                </span>
-              )}
-            </a>
-          ))}
-        </nav>
-
-        {sidebarOpen && (
-          <div className="p-4 border-t border-gray-700">
-            <button
-              onClick={() => navigate("/settings")}
-              className="w-full flex items-center gap-2 p-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
-            >
-              <FaCog className="text-lg" />
-              <span className="text-sm font-medium">Paramètres</span>
-            </button>
-          </div>
-        )}
-      </aside>
+      {/* Shared Sidebar */}
+      <Sidebar />
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
