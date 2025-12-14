@@ -104,15 +104,13 @@ export default function Sidebar() {
               <div className="p-2 bg-pink-600 rounded-lg">
                 <FaUserMd className="text-xl" />
               </div>
-              <span className="font-bold text-lg">DentiSsra</span>
+              <span className="font-bold text-lg">Samah Dental Clinic</span>
             </div>
           )}
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
-          >
+          {/* Disable toggle for Admin to keep menu fixed */}
+          <div className="p-2 rounded-lg" aria-hidden>
             {sidebarOpen ? <FaTimes /> : <FaBars />}
-          </button>
+          </div>
         </div>
       </div>
 
