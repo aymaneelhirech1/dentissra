@@ -9,3 +9,27 @@ html {
 .input {
   @apply border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none;
 }
+
+/* Watermark logo for pages (low opacity, centered, non-interactive) */
+.page-watermark::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('/logo.avif');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 40vmin; /* responsive size */
+  opacity: 0.06; /* very low opacity */
+  pointer-events: none; /* don't block clicks */
+  z-index: 0;
+}
+
+/* Ensure page container positions children above watermark */
+.page-with-watermark {
+  position: relative;
+}
+
+.page-with-watermark > * {
+  position: relative;
+  z-index: 1;
+}

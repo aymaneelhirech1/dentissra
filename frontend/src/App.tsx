@@ -46,7 +46,7 @@ import PersonnelCreate from "./Pages/Admin/PersonnelCreate";
 
 export default function App() {
   return (
-    <>
+    <div className="page-with-watermark page-watermark">
       <Toaster
         position="top-center"
         toastOptions={{
@@ -448,6 +448,6 @@ export default function App() {
           }
         />
       </Routes>
-    </>
+    </div>
   );
 }

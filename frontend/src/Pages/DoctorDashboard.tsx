@@ -44,7 +44,7 @@ export default function DoctorDashboard() {
   if (error) return <div className="p-6 text-red-500">{error}</div>;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 page-with-watermark page-watermark">
       <DoctorHeader doctor={data?.doctor} onLogout={handleLogout} />
 
       <DoctorStats stats={{...data.stats, appointmentsToday: data.appointmentsToday?.length}} />
