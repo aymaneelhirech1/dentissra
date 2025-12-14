@@ -19,6 +19,7 @@ import notificationRouter from "./routes/notification.routes";
 import settingsRouter from "./routes/settings.route";
 import personnelRouter from "./routes/personnel.route";
 import whatsappRouter from "./routes/whatsapp.route";
+import doctorRouter from "./routes/doctor.route";
 
 dotenv.config();
 const app = express();
@@ -60,6 +61,7 @@ app.use("/api/notification", notificationRouter);
 app.use("/api/settings", settingsRouter);
 app.use("/api/personnel", personnelRouter);
 app.use("/api/whatsapp", whatsappRouter);
+app.use("/api/doctor", doctorRouter);
 
 const port = process.env.PORT || 5000;
 

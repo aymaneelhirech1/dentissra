@@ -41,6 +41,7 @@ import ProtectedRoute from "./Components/ProtectedRoute";
 import { Toaster } from "react-hot-toast";
 import Dashboard from "./Pages/Admin/Dashboard";
 import SecretaryDashboard from "./Pages/Secretary/SecretaryDashboard";
+import DoctorDashboard from "./Pages/DoctorDashboard";
 import PersonnelCreate from "./Pages/Admin/PersonnelCreate";
 
 export default function App() {
@@ -407,6 +408,15 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={["Receptionist", "Admin"]}>
               <SecretaryDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/doctor-dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["Dentist"]}>
+              <DoctorDashboard />
             </ProtectedRoute>
           }
         />
