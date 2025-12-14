@@ -15,7 +15,8 @@ html {
   content: "";
   position: absolute;
   inset: 0;
-  background-image: url('/logo.avif');
+  /* reference source image from src so Vite will resolve it */
+  background-image: url('../src/images/logo.avif');
   background-repeat: no-repeat;
   background-position: center;
   background-size: 40vmin; /* responsive size */
