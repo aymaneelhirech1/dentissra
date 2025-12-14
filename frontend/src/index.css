@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 html {
-    direction: rtl;
+  direction: ltr;
 }
 
 .input {
@@ -86,3 +86,19 @@ html {
 
 .accent-text { color: var(--accent-800); }
 .accent-muted { color: var(--accent-600); }
+
+/* Reusable card styles: colorful background based on theme, medium rounded edges */
+.card {
+  background: var(--card-bg);
+  border-radius: 0.75rem; /* medium rounded */
+  box-shadow: 0 8px 20px rgba(2,6,23,0.06);
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Plain white card for compact list items */
+.card-plain {
+  background: rgba(255,255,255,0.92);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(2,6,23,0.04);
+  border: 1px solid rgba(0,0,0,0.04);
+}

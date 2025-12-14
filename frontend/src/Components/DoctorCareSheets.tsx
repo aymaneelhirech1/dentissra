@@ -3,12 +3,12 @@ import { FaFileMedical } from "react-icons/fa";
 
 export default function DoctorCareSheets({ careSheets }: any) {
   return (
-    <div className="p-4 rounded shadow mt-4" style={{ background: 'var(--card-bg)' }}>
+    <div className="p-4 mt-4 card">
       <h3 className="font-semibold mb-3 accent-text">Feuilles de soins récentes</h3>
       {careSheets && careSheets.length > 0 ? (
         <ul className="space-y-3">
           {careSheets.map((f: any) => (
-            <li key={f._id} className="p-3 rounded-md border flex items-start gap-4" style={{ background: '#ffffffcc' }}>
+            <li key={f._id} className="p-3 rounded-md border flex items-start gap-4 card-plain">
               <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-xl text-gray-600">
                 <FaFileMedical />
               </div>

@@ -4,9 +4,6 @@ const bcrypt = require('bcryptjs');
 
 dotenv.config({ path: require('path').resolve(__dirname, '..', '.env') });
 
-const User = require('../models/User').default || require('../models/User');
-const Personnel = require('../models/Personnel').default || require('../models/Personnel');
-
 async function main() {
   const db = process.env.DATABASE_URL;
   if (!db) {
@@ -23,27 +20,35 @@ async function main() {
     { fullname: 'Secr Demo', email: 'secretary@dental.com', password: 'secretary123', role: 'Receptionist' },
   ];
 
+  const usersCollection = mongoose.connection.collection('users');
+  const personnelCollection = mongoose.connection.collection('personnels');
+
   for (const u of usersToCreate) {
-    const exist = await User.findOne({ email: u.email });
+    const exist = await usersCollection.findOne({ email: u.email });
     if (exist) {
       console.log(`User exists: ${u.email}`);
       continue;
     }
     const hashed = await bcrypt.hash(u.password, 12);
-    const newUser = await User.create({
+    const newUserDoc = {
       fullname: u.fullname,
       email: u.email,
       password: hashed,
       role: u.role,
+      avatar: '',
+      cover: '',
+      bio: 'Hello User!',
       specialization: u.specialization || undefined,
-    });
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    const result = await usersCollection.insertOne(newUserDoc);
     console.log(`Created user: ${u.email}`);
 
-    // For doctors, create Personnel record
     if (u.role === 'Dentist') {
-      const personnelExist = await Personnel.findOne({ email: u.email });
+      const personnelExist = await personnelCollection.findOne({ email: u.email });
       if (!personnelExist) {
-        const personnel = new Personnel({
+        const personnel = {
           nom: 'Demo',
           prenom: 'Dr',
           cin: `CIN${Math.floor(Math.random() * 1000000)}`,
@@ -55,9 +60,12 @@ async function main() {
           poste: 'Dentiste',
           specialite: u.specialization || 'Dentisterie',
           dateEmbauche: new Date(),
-          userId: newUser._id,
-        });
-        await personnel.save();
+          salaire: 0,
+          userId: result.insertedId,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        };
+        await personnelCollection.insertOne(personnel);
         console.log(`Created personnel for ${u.email}`);
       }
     }

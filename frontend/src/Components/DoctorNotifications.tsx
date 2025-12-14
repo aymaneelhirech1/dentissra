@@ -2,7 +2,7 @@ import React from "react";
 
 export default function DoctorNotifications({ notifications, onMarkRead }: any) {
   return (
-    <div className="p-4 rounded shadow mt-4" style={{ background: 'var(--card-bg)' }}>
+    <div className="p-4 mt-4 card">
       <h3 className="font-semibold mb-3 accent-text">Notifications importantes</h3>
       {notifications && notifications.length > 0 ? (
         <ul className="space-y-2 max-h-60 overflow-auto">

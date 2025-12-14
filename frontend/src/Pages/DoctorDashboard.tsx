@@ -5,6 +5,9 @@ import DoctorAppointments from "../Components/DoctorAppointments";
 import DoctorPatients from "../Components/DoctorPatients";
 import DoctorCareSheets from "../Components/DoctorCareSheets";
 import DoctorNotifications from "../Components/DoctorNotifications";
+import DoctorQuickRecord from "../Components/DoctorQuickRecord";
+import DoctorRadiology from "../Components/DoctorRadiology";
+import DoctorAIAssistant from "../Components/DoctorAIAssistant";
 
 export default function DoctorDashboard() {
   const [data, setData] = useState<any>(null);
@@ -72,18 +75,21 @@ export default function DoctorDashboard() {
 
   return (
     <div className={`p-6 space-y-6 page-with-watermark page-watermark ${themeClass}`}>
-      <DoctorHeader doctor={data?.doctor} onLogout={handleLogout} />
+      <DoctorHeader doctor={data?.doctor} onLogout={handleLogout} notificationsCount={notifications.length} />
 
       <DoctorStats stats={{...data.stats, appointmentsToday: data.appointmentsToday?.length}} />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-6">
+          <DoctorQuickRecord patient={data?.recentPatients?.[0]} />
           <DoctorAppointments appointments={data.appointmentsToday} />
           <DoctorCareSheets careSheets={data.recentCareSheets} />
         </div>
         <div className="space-y-6">
           <DoctorPatients patients={data.recentPatients} />
           <DoctorNotifications notifications={notifications} onMarkRead={markAsRead} />
+          <DoctorRadiology patient={data?.recentPatients?.[0]} />
+          <DoctorAIAssistant patient={data?.recentPatients?.[0]} />
         </div>
       </div>
     </div>
