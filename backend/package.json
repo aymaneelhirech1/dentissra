@@ -4,7 +4,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "bun run --watch index.ts"
+    "start": "bun run --watch index.ts",
+    "seed": "node scripts/seedUsers.cjs"
   },
   "devDependencies": {
     "@types/bun": "latest",
