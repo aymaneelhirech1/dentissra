@@ -17,11 +17,13 @@ import {
 } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import { toast } from "react-toastify";
+import { useSettings } from "../contexts/SettingsContext";
 
 export default function Sidebar() {
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const { settings } = useSettings();
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -101,8 +103,14 @@ export default function Sidebar() {
         <div className="flex items-center justify-between">
           {sidebarOpen && (
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-pink-600 rounded-lg">
-                <FaUserMd className="text-xl" />
+              <div className="w-10 h-10 rounded-lg overflow-hidden bg-white">
+                {settings?.logo ? (
+                  <img src={settings.logo} alt="Logo" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="p-2 bg-pink-600 rounded-lg flex items-center justify-center h-full">
+                    <FaUserMd className="text-xl text-white" />
+                  </div>
+                )}
               </div>
               <span className="font-bold text-lg">Samah Dental Clinic</span>
             </div>
