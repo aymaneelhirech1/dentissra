@@ -82,6 +82,7 @@ export default function Settings() {
     password: "",
     role: "Receptionist", // Receptionist or Dentist
     specialization: "", // For doctors
+    approved: false,
     permissions: {
       patients: true,
       appointments: true,
@@ -297,6 +298,16 @@ export default function Settings() {
       setIsNewPersonnel(false);
       setSelectedUserId(userId);
       const selected = personnelList.find(p => p._id === userId);
+      const matchingPersonnel = existingPersonnel.find(ep => {
+        try {
+          if (!ep.userId) return false;
+          if (typeof ep.userId === 'string') return ep.userId === userId;
+          if (ep.userId._id) return ep.userId._id === userId;
+          return ep.userId.toString() === userId;
+        } catch (err) {
+          return false;
+        }
+      });
       if (selected) {
         setPersonnelData({
           fullname: selected.fullname,
@@ -304,7 +315,8 @@ export default function Settings() {
           password: "",
           role: selected.role,
           specialization: selected.specialization || "",
-          permissions: selected.permissions || {
+          approved: matchingPersonnel?.approved || false,
+          permissions: matchingPersonnel?.permissions || selected.permissions || {
             patients: true,
             appointments: true,
             invoices: true,
@@ -457,6 +469,7 @@ export default function Settings() {
 
     setLoading(true);
     try {
+      // First update the User permissions
       const res = await fetch(`http://localhost:5000/api/auth/user/${selectedUserId}`, {
         method: "PUT",
         headers: {
@@ -508,6 +521,38 @@ export default function Settings() {
         }
         
         fetchPersonnelList();
+        // Also update Personnel document if exists (to set approved and personnel-level permissions)
+        try {
+          const personnelDoc = existingPersonnel.find((ep: any) => {
+            try {
+              if (!ep.userId) return false;
+              if (typeof ep.userId === 'string') return ep.userId === selectedUserId;
+              if (ep.userId._id) return ep.userId._id === selectedUserId;
+              return ep.userId.toString() === selectedUserId;
+            } catch (err) {
+              return false;
+            }
+          });
+
+          if (personnelDoc) {
+            await fetch(`http://localhost:5000/api/personnel/${personnelDoc._id}`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify({
+                permissions: personnelData.permissions,
+                approved: personnelData.approved,
+              }),
+            });
+
+            // refresh personnel list from server
+            fetchExistingPersonnel();
+          }
+        } catch (err) {
+          console.error("Erreur lors de la mise à jour du personnel:", err);
+        }
       } else {
         toast.error(data.error || "Erreur lors de la mise à jour");
       }
@@ -1694,10 +1739,25 @@ export default function Settings() {
                       )}
                     </div>
 
+                    {/* Approval toggle for Dentists */}
+                    {!isNewPersonnel && personnelData.role === "Dentist" && (
+                      <div className="mt-6">
+                        <label className="flex items-center gap-3 p-3 bg-white rounded-lg border-2 border-gray-200">
+                          <input
+                            type="checkbox"
+                            checked={personnelData.approved === true}
+                            onChange={(e) => setPersonnelData({ ...personnelData, approved: e.target.checked })}
+                            className="w-5 h-5 text-indigo-600 rounded"
+                          />
+                          <span className="font-medium text-gray-700">Approuver le personnel (accès au dashboard)</span>
+                        </label>
+                      </div>
+                    )}
+
                     {/* Action Buttons */}
                     <div className="flex items-center justify-center gap-4 mt-8">
                       {/* Save Permissions Button (for existing personnel with Receptionist role) */}
-                      {!isNewPersonnel && personnelData.role === "Receptionist" && (
+                      {!isNewPersonnel && (
                         <button
                           type="button"
                           onClick={handleUpdatePermissions}
