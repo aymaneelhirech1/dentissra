@@ -109,7 +109,7 @@ export default function Dashboard() {
   });
 
   const [loading, setLoading] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const sidebarOpen = true;
   const [userName, setUserName] = useState("Admin");
   const [weather, setWeather] = useState({ temp: 22, condition: "Ensoleillé" });
   const [showLogoutMenu, setShowLogoutMenu] = useState(false);
@@ -286,12 +286,9 @@ export default function Dashboard() {
                 <span className="font-bold text-lg">{settings.name || "Dental Clinic"}</span>
               </div>
             )}
-            <button 
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
-            >
-              {sidebarOpen ? <FaTimes /> : <FaBars />}
-            </button>
+            <div className="p-2 rounded-lg" aria-hidden>
+              <FaTimes />
+            </div>
           </div>
         </div>
 

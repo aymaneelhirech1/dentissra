@@ -42,7 +42,7 @@ export default function PatientForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const sidebarOpen = true;
 
   const [form, setForm] = useState({
     nom: "",
@@ -190,12 +190,9 @@ export default function PatientForm() {
                 <span className="font-bold text-lg">Dental Clinic</span>
               </div>
             )}
-            <button 
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="p-2 hover:bg-gray-700 rounded-lg transition-colors"
-            >
-              {sidebarOpen ? <FaTimes /> : <FaBars />}
-            </button>
+            <div className="p-2 rounded-lg" aria-hidden>
+              <FaTimes />
+            </div>
           </div>
         </div>
 
