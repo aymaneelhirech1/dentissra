@@ -211,7 +211,14 @@ export default function Login() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => quickLogin('doctor')}
+                    onClick={async () => {
+                      // prefill fields so user can see them
+                      setEmail('doctor@dental.com');
+                      setPassword('doctor123');
+                      // small delay to allow inputs to update visually, then perform quick login
+                      await new Promise((r) => setTimeout(r, 150));
+                      quickLogin('doctor');
+                    }}
                     disabled={loading}
                     className="px-4 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white text-sm rounded-lg hover:from-rose-600 hover:to-rose-700 transition font-medium shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                   >
