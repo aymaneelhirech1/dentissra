@@ -36,6 +36,8 @@ export default function Login() {
         // Redirect based on role
         if (data.user.role === "Receptionist") {
           window.location.href = "/secretary-dashboard";
+        } else if (data.user.role === "Dentist") {
+          window.location.href = "/doctor-dashboard";
         } else {
           window.location.href = "/dashboard";
         }
@@ -48,13 +50,15 @@ export default function Login() {
     }
   };
 
-  const quickLogin = async (role: 'admin' | 'secretary') => {
+  const quickLogin = async (role: 'admin' | 'secretary' | 'doctor') => {
     setLoading(true);
     setErrorMessage("");
     
     const credentials = {
       admin: { email: 'admin@admin.com', password: 'admin1234567890' },
       secretary: { email: 'secretary@dental.com', password: 'secretary123' }
+      ,
+      doctor: { email: 'doctor@dental.com', password: 'doctor123' }
     };
 
     try {
@@ -77,6 +81,8 @@ export default function Login() {
         // Redirect based on role
         if (data.user.role === "Receptionist") {
           window.location.href = "/secretary-dashboard";
+        } else if (data.user.role === "Dentist") {
+          window.location.href = "/doctor-dashboard";
         } else {
           window.location.href = "/dashboard";
         }
@@ -186,7 +192,7 @@ export default function Login() {
               {/* Quick Login Buttons */}
               <div className="mt-4 pt-4 border-t border-gray-200">
                 <p className="text-xs text-gray-500 text-center mb-3">Connexion rapide (Dev)</p>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-3 gap-3">
                   <button
                     type="button"
                     onClick={() => quickLogin('admin')}
@@ -202,6 +208,14 @@ export default function Login() {
                     className="px-4 py-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white text-sm rounded-lg hover:from-teal-600 hover:to-teal-700 transition font-medium shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     👩‍💼 Secrétaire
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => quickLogin('doctor')}
+                    disabled={loading}
+                    className="px-4 py-2 bg-gradient-to-r from-rose-500 to-rose-600 text-white text-sm rounded-lg hover:from-rose-600 hover:to-rose-700 transition font-medium shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    🩺 Docteur
                   </button>
                 </div>
               </div>
