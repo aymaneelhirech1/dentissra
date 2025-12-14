@@ -3,6 +3,8 @@ import DoctorHeader from "../Components/DoctorHeader";
 import DoctorStats from "../Components/DoctorStats";
 import DoctorAppointments from "../Components/DoctorAppointments";
 import DoctorPatients from "../Components/DoctorPatients";
+import DoctorCareSheets from "../Components/DoctorCareSheets";
+import DoctorNotifications from "../Components/DoctorNotifications";
 
 export default function DoctorDashboard() {
   const [data, setData] = useState<any>(null);
@@ -23,10 +25,32 @@ export default function DoctorDashboard() {
       }
       const json = await res.json();
       setData(json);
+      // fetch notifications for current user
+      try {
+        const r2 = await fetch("http://localhost:5000/api/notification", { headers: { Authorization: `Bearer ${token}` } });
+        if (r2.ok) {
+          const njson = await r2.json();
+          setNotifications(njson);
+        }
+      } catch (e) {
+        // ignore notification errors
+      }
     } catch (err: any) {
       setError(err.message || "Erreur lors du chargement");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const [notifications, setNotifications] = useState<any[]>([]);
+
+  const markAsRead = async (id: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      await fetch(`http://localhost:5000/api/notification/${id}/read`, { method: "PUT", headers: { Authorization: `Bearer ${token}` } });
+      setNotifications((prev) => prev.filter((n) => n._id !== id));
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -50,15 +74,13 @@ export default function DoctorDashboard() {
       <DoctorStats stats={{...data.stats, appointmentsToday: data.appointmentsToday?.length}} />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2">
+        <div className="md:col-span-2 space-y-6">
           <DoctorAppointments appointments={data.appointmentsToday} />
+          <DoctorCareSheets careSheets={data.recentCareSheets} />
         </div>
-        <div>
+        <div className="space-y-6">
           <DoctorPatients patients={data.recentPatients} />
-          <div className="mt-4 bg-white p-4 rounded shadow">
-            <h3 className="font-semibold mb-3">Notifications importantes</h3>
-            <p className="text-sm text-gray-500">Aucune notification.</p>
-          </div>
+          <DoctorNotifications notifications={notifications} onMarkRead={markAsRead} />
         </div>
       </div>
     </div>
