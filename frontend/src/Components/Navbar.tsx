@@ -27,7 +27,7 @@ export default function Navbar() {
       { title: "Dossiers M\u00e9dicaux", link: "/feuilles" },
     ],
     Dentist: [
-      { title: "Tableau de bord", link: "/dashboard" },
+      { title: "Tableau de bord", link: "/doctor-dashboard" },
       { title: "Patients", link: "/patients" },
       { title: "Rendez-vous", link: "/appointments" },
       { title: "Factures", link: "/factures" },
