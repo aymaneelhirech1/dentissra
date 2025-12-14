@@ -55,26 +55,26 @@ html {
 
 /* Theme variables for doctor dashboard */
 .theme-homme {
-  --accent-600: #0ea5a4; /* teal */
-  --accent-400: #34d399;
-  --accent-50: #ecfeff;
-  --accent-800: #065f46;
+  --accent-600: #0b7f7d; /* darker teal */
+  --accent-400: #2bb59f;
+  --accent-50: #e6fffe;
+  --accent-800: #044f4d;
   --card-bg: linear-gradient(90deg,var(--accent-50),#ffffff);
 }
 
 .theme-femme {
-  --accent-600: #f472b6; /* pink */
-  --accent-400: #fb7185;
+  --accent-600: #b91c6a; /* darker pink */
+  --accent-400: #ef476f;
   --accent-50: #fff0f6;
-  --accent-800: #9f1239;
+  --accent-800: #6f1233;
   --card-bg: linear-gradient(90deg,var(--accent-50),#ffffff);
 }
 
 .theme-neutral {
-  --accent-600: #6366f1;
-  --accent-400: #8b5cf6;
+  --accent-600: #4f46e5;
+  --accent-400: #6d28d9;
   --accent-50: #f3f0ff;
-  --accent-800: #3730a3;
+  --accent-800: #2e1a8f;
   --card-bg: linear-gradient(90deg,var(--accent-50),#ffffff);
 }
 
@@ -89,16 +89,29 @@ html {
 
 /* Reusable card styles: colorful background based on theme, medium rounded edges */
 .card {
+  --card-padding: 1rem;
+  --card-radius: 1rem; /* medium rounded increased */
+  --card-shadow: 0 10px 30px rgba(2,6,23,0.08);
+
   background: var(--card-bg);
-  border-radius: 0.75rem; /* medium rounded */
-  box-shadow: 0 8px 20px rgba(2,6,23,0.06);
+  padding: var(--card-padding);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
   border: 1px solid rgba(0,0,0,0.04);
+  border-left: 4px solid var(--accent-400);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(2,6,23,0.12);
 }
 
 /* Plain white card for compact list items */
 .card-plain {
-  background: rgba(255,255,255,0.92);
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 12px rgba(2,6,23,0.04);
+  background: rgba(255,255,255,0.96);
+  padding: 0.75rem;
+  border-radius: calc(var(--card-radius) - 0.25rem);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.04);
   border: 1px solid rgba(0,0,0,0.04);
 }

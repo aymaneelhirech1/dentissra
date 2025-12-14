@@ -52,6 +52,12 @@ export async function getDoctorDashboard(req: Request, res: Response) {
     // try to get personnel record to include sexe
     const personnel = await Personnel.findOne({ userId: doctor._id }).select("sexe");
 
+    // If doctor has a personnel record, ensure they are approved by admin
+    const personnelFull = await Personnel.findOne({ userId: doctor._id }).select("approved");
+    if (personnelFull && !personnelFull.approved) {
+      return res.status(403).json({ error: "حساب الطبيب غير مفوّض من قبل المشرف" });
+    }
+
     res.json({
       doctor: {
         _id: doctor._id,

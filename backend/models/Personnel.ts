@@ -32,6 +32,20 @@ const PersonnelSchema = new mongoose.Schema({
     required: true,
     ref: "User",
   },
+  approved: { type: Boolean, default: false },
+  permissions: {
+    type: Object,
+    default: {
+      patients: true,
+      appointments: true,
+      invoices: true,
+      medicalFiles: true,
+      prescriptions: true,
+      inventory: true,
+      suppliers: true,
+      statistics: true,
+    },
+  },
 }, { timestamps: true });
 
 export default mongoose.model("Personnel", PersonnelSchema);

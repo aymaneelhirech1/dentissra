@@ -42,25 +42,25 @@ type StatCardProps = {
 };
 
 const StatCard = ({ title, count, icon, gradient, trend, bgIcon }: StatCardProps) => (
-  <div className={`relative overflow-hidden rounded-2xl ${gradient} p-6 text-white shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105`}>
+  <div className={`relative overflow-hidden rounded-2xl ${gradient} p-4 text-white shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-102`}> 
     <div className="relative z-10">
-      <div className="flex items-center justify-between mb-4">
-        <div className={`p-3 ${bgIcon} rounded-xl shadow-lg`}>
+      <div className="flex items-center justify-between mb-2">
+        <div className={`p-2 ${bgIcon} rounded-lg shadow-sm`}>
           {icon}
         </div>
         {trend !== undefined && (
-          <div className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm font-bold ${
-            trend >= 0 ? 'bg-green-500/30' : 'bg-red-500/30'
+          <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold ${
+            trend >= 0 ? 'bg-green-500/20' : 'bg-red-500/20'
           }`}>
             {trend >= 0 ? <FaArrowUp /> : <FaArrowDown />}
             <span>{Math.abs(trend)}%</span>
           </div>
         )}
       </div>
-      <h3 className="text-4xl font-bold mb-2">{count}</h3>
-      <p className="text-sm font-medium opacity-90">{title}</p>
+      <h3 className="text-3xl font-bold mb-1">{count}</h3>
+      <p className="text-xs font-medium opacity-90">{title}</p>
     </div>
-    <div className="absolute -right-8 -bottom-8 opacity-10 text-9xl">
+    <div className="absolute -right-6 -bottom-6 opacity-10 text-7xl">
       {icon}
     </div>
   </div>
@@ -102,6 +102,10 @@ export default function Dashboard() {
     prescriptions: 0,
     inventory: 0,
     suppliers: 0,
+    doctors: 0,
+    receptionists: 0,
+    doctorAttendance: 0,
+    receptionistAttendance: 0,
   });
 
   const [loading, setLoading] = useState(true);
@@ -175,6 +179,27 @@ export default function Dashboard() {
         inventory: getCount(inventoryRes),
         suppliers: getCount(suppliersRes),
       };
+
+      // fetch personnel and compute doctor / receptionist counts
+      try {
+        const personnelRes = await axios.get("http://localhost:5000/api/personnel", {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        });
+        const personnel = Array.isArray(personnelRes.data) ? personnelRes.data : personnelRes.data?.data || [];
+
+        const doctors = personnel.filter((p: any) => p.poste === "Dentiste");
+        const receptionists = personnel.filter((p: any) => p.poste === "Secrétaire");
+
+        const doctorAttendance = doctors.filter((d: any) => d.statut === "Actif" || d.statut === undefined).length;
+        const receptionistAttendance = receptionists.filter((r: any) => r.statut === "Actif" || r.statut === undefined).length;
+
+        newStats.doctors = doctors.length;
+        newStats.receptionists = receptionists.length;
+        newStats.doctorAttendance = doctorAttendance;
+        newStats.receptionistAttendance = receptionistAttendance;
+      } catch (err) {
+        console.warn("Could not fetch personnel stats:", err);
+      }
 
       console.log("Dashboard stats updated:", newStats);
       setStats(newStats);
@@ -387,7 +412,7 @@ export default function Dashboard() {
           ) : (
             <>
             {/* Statistics Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               <StatCard 
                 title="Patients" 
                 count={stats.patients} 
@@ -412,6 +437,13 @@ export default function Dashboard() {
                 bgIcon="bg-white/20"
                 trend={-3}
               />
+              <StatCard
+                title="Médecins (présents)"
+                count={stats.doctorAttendance}
+                icon={<FaUserMd className="text-2xl" />}
+                gradient="bg-gradient-to-br from-indigo-500 to-purple-600"
+                bgIcon="bg-white/20"
+              />
               <StatCard 
                 title="Ordonnances" 
                 count={stats.prescriptions} 
@@ -435,6 +467,13 @@ export default function Dashboard() {
                 gradient="bg-gradient-to-br from-indigo-500 to-purple-700"
                 bgIcon="bg-white/20"
                 trend={2}
+              />
+              <StatCard
+                title="Secrétaires (présentes)"
+                count={stats.receptionistAttendance}
+                icon={<FaUsers className="text-2xl" />}
+                gradient="bg-gradient-to-br from-green-500 to-emerald-600"
+                bgIcon="bg-white/20"
               />
             </div>
 

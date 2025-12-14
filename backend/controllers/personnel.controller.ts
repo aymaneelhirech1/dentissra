@@ -7,6 +7,17 @@ import mongoose from "mongoose";
 // Créer un personnel
 export async function createPersonnel(req: Request, res: Response) {
   try {
+    // Only admins may create a Dentiste directly
+    if (req.body.poste === 'Dentiste' && req.user?.role !== 'Admin') {
+      return res.status(403).json({ error: 'Seul un administrateur peut créer un Dentiste' });
+    }
+
+    // Enforce doctor limit
+    if (req.body.poste === 'Dentiste') {
+      const count = await Personnel.countDocuments({ poste: 'Dentiste' });
+      if (count >= 10) return res.status(400).json({ error: 'Limite maximale de 10 médecins atteinte' });
+    }
+
     const personnel = new Personnel(req.body);
     await personnel.save();
     res.status(201).json(personnel);
@@ -86,7 +97,23 @@ export async function updatePersonnel(req: Request, res: Response) {
       return res.status(400).json({ error: "ID personnel invalide" });
     }
 
-    const personnel = await Personnel.findByIdAndUpdate(id, req.body, { new: true });
+    // Prevent non-admins from changing approval/permissions/poste/userId
+    const safeBody: any = { ...req.body };
+    const actorRole = (req as any).user?.role;
+    if (actorRole !== 'Admin') {
+      delete safeBody.approved;
+      delete safeBody.permissions;
+      delete safeBody.poste;
+      delete safeBody.userId;
+    }
+
+    // If updating to a Dentiste, enforce limit (only admin allowed already)
+    if (safeBody.poste === 'Dentiste') {
+      const count = await Personnel.countDocuments({ poste: 'Dentiste' });
+      if (count >= 10) return res.status(400).json({ error: 'Limite maximale de 10 médecins atteinte' });
+    }
+
+    const personnel = await Personnel.findByIdAndUpdate(id, safeBody, { new: true });
     
     if (!personnel) {
       return res.status(404).json({ error: "Personnel non trouvé" });
@@ -163,6 +190,15 @@ export async function createPersonnelWithUser(req: Request, res: Response) {
 
     if (!nom || !prenom || !cin || !dateEmbauche || !poste || !telephone || !email || !password) {
       return res.status(400).json({ error: "Champs requis manquants" });
+    }
+
+    // If creating a Dentiste, enforce admin-only creation and doctor limit
+    if (poste === 'Dentiste') {
+      if ((req as any).user?.role !== 'Admin') {
+        return res.status(403).json({ error: 'Seul un administrateur peut créer un Dentiste' });
+      }
+      const count = await Personnel.countDocuments({ poste: 'Dentiste' });
+      if (count >= 10) return res.status(400).json({ error: 'Limite maximale de 10 médecins atteinte' });
     }
 
     // Check existing user/email
