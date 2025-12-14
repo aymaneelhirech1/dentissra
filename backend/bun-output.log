@@ -1,0 +1,138 @@
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+http://localhost:5000
+Database Connected
+Loading...
+Loading...
+Current user from token: {
+  _id: new ObjectId('693b44314b27e689a345312f'),
+  fullname: "Admin",
+  email: "admin@admin.com",
+  password: "$2b$12$ccRpkTZN0qMhkHcXrp7Aue1MpX2Ehdk374hlJBEzWBFKPEFixdLla",
+  role: "Admin",
+  avatar: "https://res.cloudinary.com/dgagbheuj/image/upload/v1763194734/avatar-default-image_yc4xy4.jpg",
+  cover: "https://res.cloudinary.com/dgagbheuj/image/upload/v1763194811/cover-default-image_uunwq6.jpg",
+  bio: "Hello User!",
+  createdAt: 2025-12-11T22:22:41.387Z,
+  updatedAt: 2025-12-11T22:22:41.387Z,
+  __v: 0,
+}
+Loading...
+Current user from token: {
+  _id: new ObjectId('693b44314b27e689a345312f'),
+  fullname: "Admin",
+  email: "admin@admin.com",
+  password: "$2b$12$ccRpkTZN0qMhkHcXrp7Aue1MpX2Ehdk374hlJBEzWBFKPEFixdLla",
+  role: "Admin",
+  avatar: "https://res.cloudinary.com/dgagbheuj/image/upload/v1763194734/avatar-default-image_yc4xy4.jpg",
+  cover: "https://res.cloudinary.com/dgagbheuj/image/upload/v1763194811/cover-default-image_uunwq6.jpg",
+  bio: "Hello User!",
+  createdAt: 2025-12-11T22:22:41.387Z,
+  updatedAt: 2025-12-11T22:22:41.387Z,
+  __v: 0,
+}
+Loading...
+Current user from token: {
+  _id: new ObjectId('693b44314b27e689a345312f'),
+  fullname: "Admin",
+  email: "admin@admin.com",
+  password: "$2b$12$ccRpkTZN0qMhkHcXrp7Aue1MpX2Ehdk374hlJBEzWBFKPEFixdLla",
+  role: "Admin",
+  avatar: "https://res.cloudinary.com/dgagbheuj/image/upload/v1763194734/avatar-default-image_yc4xy4.jpg",
+  cover: "https://res.cloudinary.com/dgagbheuj/image/upload/v1763194811/cover-default-image_uunwq6.jpg",
+  bio: "Hello User!",
+  createdAt: 2025-12-11T22:22:41.387Z,
+  updatedAt: 2025-12-11T22:22:41.387Z,
+  __v: 0,
+}
+Loading...
+Current user from token: {
+  _id: new ObjectId('693b44314b27e689a345312f'),
+  fullname: "Admin",
+  email: "admin@admin.com",
+  password: "$2b$12$ccRpkTZN0qMhkHcXrp7Aue1MpX2Ehdk374hlJBEzWBFKPEFixdLla",
+  role: "Admin",
+  avatar: "https://res.cloudinary.com/dgagbheuj/image/upload/v1763194734/avatar-default-image_yc4xy4.jpg",
+  cover: "https://res.cloudinary.com/dgagbheuj/image/upload/v1763194811/cover-default-image_uunwq6.jpg",
+  bio: "Hello User!",
+  createdAt: 2025-12-11T22:22:41.387Z,
+  updatedAt: 2025-12-11T22:22:41.387Z,
+  __v: 0,
+}
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Current user from token: {
+  _id: new ObjectId('693b44314b27e689a345312f'),
+  fullname: "Admin",
+  email: "admin@admin.com",
+  password: "$2b$12$ccRpkTZN0qMhkHcXrp7Aue1MpX2Ehdk374hlJBEzWBFKPEFixdLla",
+  role: "Admin",
+  avatar: "https://res.cloudinary.com/dgagbheuj/image/upload/v1763194734/avatar-default-image_yc4xy4.jpg",
+  cover: "https://res.cloudinary.com/dgagbheuj/image/upload/v1763194811/cover-default-image_uunwq6.jpg",
+  bio: "Hello User!",
+  createdAt: 2025-12-11T22:22:41.387Z,
+  updatedAt: 2025-12-11T22:22:41.387Z,
+  __v: 0,
+}
+Loading...
+Current user from token: {
+  _id: new ObjectId('693b44314b27e689a345312f'),
+  fullname: "Admin",
+  email: "admin@admin.com",
+  password: "$2b$12$ccRpkTZN0qMhkHcXrp7Aue1MpX2Ehdk374hlJBEzWBFKPEFixdLla",
+  role: "Admin",
+  avatar: "https://res.cloudinary.com/dgagbheuj/image/upload/v1763194734/avatar-default-image_yc4xy4.jpg",
+  cover: "https://res.cloudinary.com/dgagbheuj/image/upload/v1763194811/cover-default-image_uunwq6.jpg",
+  bio: "Hello User!",
+  createdAt: 2025-12-11T22:22:41.387Z,
+  updatedAt: 2025-12-11T22:22:41.387Z,
+  __v: 0,
+}
+Loading...
+Current user from token: {
+  _id: new ObjectId('693b44314b27e689a345312f'),
+  fullname: "Admin",
+  email: "admin@admin.com",
+  password: "$2b$12$ccRpkTZN0qMhkHcXrp7Aue1MpX2Ehdk374hlJBEzWBFKPEFixdLla",
+  role: "Admin",
+  avatar: "https://res.cloudinary.com/dgagbheuj/image/upload/v1763194734/avatar-default-image_yc4xy4.jpg",
+  cover: "https://res.cloudinary.com/dgagbheuj/image/upload/v1763194811/cover-default-image_uunwq6.jpg",
+  bio: "Hello User!",
+  createdAt: 2025-12-11T22:22:41.387Z,
+  updatedAt: 2025-12-11T22:22:41.387Z,
+  __v: 0,
+}
+Loading...
+Current user from token: {
+  _id: new ObjectId('693b44314b27e689a345312f'),
+  fullname: "Admin",
+  email: "admin@admin.com",
+  password: "$2b$12$ccRpkTZN0qMhkHcXrp7Aue1MpX2Ehdk374hlJBEzWBFKPEFixdLla",
+  role: "Admin",
+  avatar: "https://res.cloudinary.com/dgagbheuj/image/upload/v1763194734/avatar-default-image_yc4xy4.jpg",
+  cover: "https://res.cloudinary.com/dgagbheuj/image/upload/v1763194811/cover-default-image_uunwq6.jpg",
+  bio: "Hello User!",
+  createdAt: 2025-12-11T22:22:41.387Z,
+  updatedAt: 2025-12-11T22:22:41.387Z,
+  __v: 0,
+}
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
+Loading...
