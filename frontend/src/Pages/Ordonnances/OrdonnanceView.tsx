@@ -118,7 +118,14 @@ export default function OrdonnanceView() {
 
       {/* Prescription Document */}
       <div className="max-w-4xl mx-auto p-8">
-        <div className="bg-white shadow-2xl rounded-lg overflow-hidden print:shadow-none print:rounded-none">
+        <div className="bg-white shadow-2xl rounded-lg overflow-hidden print:shadow-none print:rounded-none relative">
+          {/* Watermark image positioned behind document content */}
+          <img
+            src={settings.logo || '/src/images/logo.avif'}
+            alt=""
+            className="print-watermark"
+            aria-hidden="true"
+          />
           {/* Header */}
           <div className="border-b-4 border-rose-600 bg-gradient-to-r from-rose-50 to-pink-50 p-8 print:bg-white">
             <div className="flex items-start justify-between">
