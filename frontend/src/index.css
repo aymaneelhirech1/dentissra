@@ -52,3 +52,37 @@ html {
     opacity: 0.08;
   }
 }
+
+/* Theme variables for doctor dashboard */
+.theme-homme {
+  --accent-600: #0ea5a4; /* teal */
+  --accent-400: #34d399;
+  --accent-50: #ecfeff;
+  --accent-800: #065f46;
+  --card-bg: linear-gradient(90deg,var(--accent-50),#ffffff);
+}
+
+.theme-femme {
+  --accent-600: #f472b6; /* pink */
+  --accent-400: #fb7185;
+  --accent-50: #fff0f6;
+  --accent-800: #9f1239;
+  --card-bg: linear-gradient(90deg,var(--accent-50),#ffffff);
+}
+
+.theme-neutral {
+  --accent-600: #6366f1;
+  --accent-400: #8b5cf6;
+  --accent-50: #f3f0ff;
+  --accent-800: #3730a3;
+  --card-bg: linear-gradient(90deg,var(--accent-50),#ffffff);
+}
+
+/* Helper classes using the variables */
+.accent-btn {
+  background: linear-gradient(90deg,var(--accent-600),var(--accent-400));
+  color: white;
+}
+
+.accent-text { color: var(--accent-800); }
+.accent-muted { color: var(--accent-600); }

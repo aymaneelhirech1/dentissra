@@ -67,8 +67,11 @@ export default function DoctorDashboard() {
   if (loading) return <div className="p-6">Chargement...</div>;
   if (error) return <div className="p-6 text-red-500">{error}</div>;
 
+  const sexe = data?.doctor?.sexe || '';
+  const themeClass = sexe === 'Homme' ? 'theme-homme' : sexe === 'Femme' ? 'theme-femme' : 'theme-neutral';
+
   return (
-    <div className="p-6 space-y-6 page-with-watermark page-watermark">
+    <div className={`p-6 space-y-6 page-with-watermark page-watermark ${themeClass}`}>
       <DoctorHeader doctor={data?.doctor} onLogout={handleLogout} />
 
       <DoctorStats stats={{...data.stats, appointmentsToday: data.appointmentsToday?.length}} />

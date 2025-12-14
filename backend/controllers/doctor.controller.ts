@@ -3,6 +3,7 @@ import User from "../models/User";
 import Patient from "../models/Patient";
 import Appointment from "../models/Appointment";
 import FeuilleDeSoins from "../models/FeuilleSoin";
+import Personnel from "../models/Personnel";
 import mongoose from "mongoose";
 
 export async function getDoctorDashboard(req: Request, res: Response) {
@@ -48,6 +49,9 @@ export async function getDoctorDashboard(req: Request, res: Response) {
       .limit(5)
       .populate("patientId", "nom prenom");
 
+    // try to get personnel record to include sexe
+    const personnel = await Personnel.findOne({ userId: doctor._id }).select("sexe");
+
     res.json({
       doctor: {
         _id: doctor._id,
@@ -55,6 +59,7 @@ export async function getDoctorDashboard(req: Request, res: Response) {
         avatar: doctor.avatar,
         specialization: doctor.specialization,
         email: doctor.email,
+        sexe: personnel?.sexe || null,
       },
       stats: {
         patientsCount,

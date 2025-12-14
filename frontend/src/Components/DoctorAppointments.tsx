@@ -7,13 +7,13 @@ export default function DoctorAppointments({ appointments }: any) {
       {appointments && appointments.length > 0 ? (
         <ul className="space-y-2">
           {appointments.map((a: any) => (
-            <li key={a._id} className="flex items-center justify-between p-2 border rounded">
+            <li key={a._id} className="flex items-center justify-between p-2 border rounded" style={{ background: 'var(--card-bg)' }}>
               <div>
                 <p className="font-medium">{a.patient?.nom ? `${a.patient?.prenom} ${a.patient?.nom}` : a.patientName || "Patient"}</p>
                 <p className="text-sm text-gray-500">{a.motif}</p>
               </div>
               <div className="text-right">
-                <p className="font-semibold">{a.heure}</p>
+                <p className="font-semibold" style={{ color: 'var(--accent-800)' }}>{a.heure}</p>
               </div>
             </li>
           ))}
