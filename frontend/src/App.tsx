@@ -37,6 +37,7 @@ import FactureView from "./Pages/Factures/FactureView";
 import Settings from "./Pages/Settings/Settings";
 import ThemeSettings from "./Pages/Settings/ThemeSettings";
 import SMM from "./Pages/SMM/SMM";
+import WhatsAppAutomation from "./Pages/Communication/WhatsAppAutomation";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import { Toaster } from "react-hot-toast";
 import Dashboard from "./Pages/Admin/Dashboard";
@@ -440,10 +441,19 @@ export default function App() {
         />
 
         <Route
-          path="/smm"
+          path="/communication/smm"
           element={
             <ProtectedRoute allowedRoles={["Admin"]}>
               <SMM />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/communication/whatsapp"
+          element={
+            <ProtectedRoute allowedRoles={["Admin"]}>
+              <WhatsAppAutomation />
             </ProtectedRoute>
           }
         />

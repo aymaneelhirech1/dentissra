@@ -14,6 +14,8 @@ import {
   FaTimes,
   FaFileInvoiceDollar,
   FaSignOutAlt,
+  FaLock,
+  FaComments,
 } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import { toast } from "react-toastify";
@@ -66,7 +68,8 @@ export default function Sidebar() {
     { icon: <FaTruck />, title: "Fournisseurs", link: "/supplier", color: "text-indigo-500", permission: "suppliers" },
     { icon: <FaFileInvoiceDollar />, title: "Factures", link: "/factures", color: "text-yellow-500", permission: "invoices" },
     { icon: <FaBoxes />, title: "Stock", link: "/inventory", color: "text-red-500", permission: "inventory" },
-    { icon: <FaShare />, title: "SMM", link: "/smm", color: "text-blue-400", permission: "admin" },
+    { icon: <FaComments />, title: "WhatsApp Automation", link: "/communication/whatsapp", color: "text-green-400", permission: "admin" },
+    { icon: <FaShare />, title: "SMM", link: "/communication/smm", color: "text-blue-400", permission: "admin" },
   ];
 
   // Filter menu items based on user permissions
@@ -112,7 +115,7 @@ export default function Sidebar() {
                   </div>
                 )}
               </div>
-              <span className="font-bold text-lg">Samah Dental Clinic</span>
+              <span className="font-bold text-lg">{settings?.name || 'Desntissra'}</span>
             </div>
           )}
           {/* Disable toggle for Admin to keep menu fixed */}
@@ -130,7 +133,14 @@ export default function Sidebar() {
             className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition-all duration-200 group"
           >
             <span className={item.color}>{item.icon}</span>
-            {sidebarOpen && <span className="text-sm font-medium group-hover:text-white">{item.title}</span>}
+            {sidebarOpen && (
+              <span className="text-sm font-medium group-hover:text-white flex items-center gap-2">
+                <span>{item.title}</span>
+                {item.link === "/communication/whatsapp" && !settings?.features?.includes("WHATSAPP_AUTOMATION") && (
+                  <FaLock className="text-xs text-gray-300" />
+                )}
+              </span>
+            )}
           </button>
         ))}
       </nav>
