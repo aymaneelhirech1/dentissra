@@ -1,0 +1,604 @@
+import { useState, useEffect } from "react";
+import { PenTool, FileText, Clock, Send, FileDown, Link2, Bell, Archive, Loader, Trash2, Edit, Plus, X } from "lucide-react";
+import Sidebar from "../../Components/Sidebar";
+import toast from "react-hot-toast";
+
+interface Acte {
+  date: string;
+  acte: string;
+  dent: string;
+  code: string;
+  quantite: number;
+  prixUnitaire: number;
+  total: number;
+}
+
+interface FeuilleDeSoins {
+  _id: string;
+  patientId: any;
+  actes: Acte[];
+  diagnostic: string;
+  traitementEffectue: string;
+  observations: string;
+  facturation: {
+    montantTotal: number;
+    partPatient: number;
+    partAssurance: number;
+    modePaiement: string;
+    statutPaiement: string;
+  };
+  signature: {
+    nomPraticien: string;
+    dateSignature: string;
+  };
+  envoiPatient: boolean;
+  rappelPaiement: boolean;
+  createdAt: string;
+}
+
+export default function FeuilleDeSoinsForm() {
+  const [form, setForm] = useState({
+    patientId: "",
+    acte: "",
+    dent: "",
+    diagnostic: "",
+    observations: "",
+    montantTotal: "",
+    partPatient: "",
+    partAssurance: "",
+    modePaiement: "Espèces",
+    statutPaiement: "En attente",
+    nomPraticien: "",
+    envoyerPatient: true,
+    rappelPaiement: false,
+  });
+  
+  const [feuilles, setFeuilles] = useState<FeuilleDeSoins[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    fetchFeuilles();
+  }, []);
+
+  const fetchFeuilles = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:5000/api/feuilles", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setFeuilles(data.data || data);
+        toast.success(`${data.data?.length || 0} feuille(s) chargée(s)`);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Erreur de chargement");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e: any) => {
+    const { name, value, type, checked } = e.target;
+    setForm({ ...form, [name]: type === "checkbox" ? checked : value });
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    const token = localStorage.getItem("token");
+    const payload = {
+      patientId: form.patientId,
+      actes: [{
+        date: new Date().toISOString(),
+        acte: form.acte,
+        dent: form.dent,
+        code: "ACT001",
+        quantite: 1,
+        prixUnitaire: parseFloat(form.montantTotal) || 0,
+        total: parseFloat(form.montantTotal) || 0
+      }],
+      diagnostic: form.diagnostic,
+      observations: form.observations,
+      facturation: {
+        montantTotal: parseFloat(form.montantTotal) || 0,
+        partPatient: parseFloat(form.partPatient) || 0,
+        partAssurance: parseFloat(form.partAssurance) || 0,
+        modePaiement: form.modePaiement,
+        statutPaiement: form.statutPaiement
+      },
+      signature: {
+        nomPraticien: form.nomPraticien,
+        dateSignature: new Date().toISOString()
+      },
+      envoiPatient: form.envoyerPatient,
+      rappelPaiement: form.rappelPaiement
+    };
+
+    try {
+      const url = editingId 
+        ? `http://localhost:5000/api/feuilles/${editingId}`
+        : "http://localhost:5000/api/feuilles";
+      
+      const method = editingId ? "PUT" : "POST";
+      
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (res.ok) {
+        toast.success(editingId ? "Feuille modifiée avec succès" : "Feuille créée avec succès");
+        fetchFeuilles();
+        resetForm();
+        setShowForm(false);
+      } else {
+        const data = await res.json();
+        toast.error(data.message || "Erreur lors de l'enregistrement");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Erreur de connexion");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Êtes-vous sûr de vouloir supprimer cette feuille ?")) return;
+    
+    const token = localStorage.getItem("token");
+    try {
+      const res = await fetch(`http://localhost:5000/api/feuilles/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.ok) {
+        toast.success("Feuille supprimée");
+        fetchFeuilles();
+      } else {
+        toast.error("Erreur lors de la suppression");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Erreur de connexion");
+    }
+  };
+
+  const handleEdit = (feuille: FeuilleDeSoins) => {
+    setEditingId(feuille._id);
+    setForm({
+      patientId: feuille.patientId,
+      acte: feuille.actes[0]?.acte || "",
+      dent: feuille.actes[0]?.dent || "",
+      diagnostic: feuille.diagnostic || "",
+      observations: feuille.observations || "",
+      montantTotal: feuille.facturation.montantTotal.toString(),
+      partPatient: feuille.facturation.partPatient.toString(),
+      partAssurance: feuille.facturation.partAssurance.toString(),
+      modePaiement: feuille.facturation.modePaiement,
+      statutPaiement: feuille.facturation.statutPaiement,
+      nomPraticien: feuille.signature.nomPraticien,
+      envoyerPatient: feuille.envoiPatient,
+      rappelPaiement: feuille.rappelPaiement,
+    });
+    setShowForm(true);
+  };
+
+  const resetForm = () => {
+    setForm({
+      patientId: "",
+      acte: "",
+      dent: "",
+      diagnostic: "",
+      observations: "",
+      montantTotal: "",
+      partPatient: "",
+      partAssurance: "",
+      modePaiement: "Espèces",
+      statutPaiement: "En attente",
+      nomPraticien: "",
+      envoyerPatient: true,
+      rappelPaiement: false,
+    });
+    setEditingId(null);
+  };
+
+  return (
+    <div dir="ltr" className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
+      <Sidebar />
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Top Header Bar */}
+        <div className="bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-lg px-8 py-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <FileText className="text-3xl" />
+            <h1 className="text-2xl font-bold">Feuille de Soins Électronique</h1>
+          </div>
+          <button
+            onClick={() => { resetForm(); setShowForm(!showForm); }}
+            className="bg-white text-pink-600 px-6 py-2.5 rounded-xl font-semibold hover:bg-pink-50 transition-all shadow-md hover:shadow-lg flex items-center gap-2"
+          >
+            {showForm ? <X /> : <Plus />} {showForm ? 'Annuler' : 'Nouvelle Feuille'}
+          </button>
+        </div>
+
+        {/* Scrollable Content */}
+        <main className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-6">
+          {loading ? (
+            <div className="flex items-center justify-center h-64">
+              <Loader className="animate-spin text-pink-600 w-12 h-12" />
+            </div>
+          ) : (
+            <div className="max-w-7xl mx-auto space-y-8">
+              
+              {/* Stats Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="bg-gradient-to-br from-pink-500 to-rose-500 text-white rounded-2xl p-6 shadow-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-pink-100 text-sm">Total Feuilles</p>
+                      <p className="text-3xl font-bold mt-1">{feuilles.length}</p>
+                    </div>
+                    <FileText className="w-12 h-12 opacity-50" />
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-green-500 to-emerald-500 text-white rounded-2xl p-6 shadow-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-green-100 text-sm">Feuilles Payées</p>
+                      <p className="text-3xl font-bold mt-1">
+                        {feuilles.filter(f => f.facturation.statutPaiement === 'Payé').length}
+                      </p>
+                    </div>
+                    <Clock className="w-12 h-12 opacity-50" />
+                  </div>
+                </div>
+
+                <div className="bg-gradient-to-br from-blue-500 to-cyan-500 text-white rounded-2xl p-6 shadow-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-blue-100 text-sm">En Attente</p>
+                      <p className="text-3xl font-bold mt-1">
+                        {feuilles.filter(f => f.facturation.statutPaiement === 'En attente').length}
+                      </p>
+                    </div>
+                    <Bell className="w-12 h-12 opacity-50" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Create New Button */}
+              {!showForm && (
+                <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-dashed border-pink-300 hover:border-pink-500 transition-all">
+                  <button
+                    onClick={() => { resetForm(); setShowForm(true); }}
+                    className="w-full flex items-center justify-center gap-3 py-4 text-pink-600 hover:text-pink-700 font-semibold text-lg"
+                  >
+                    <Plus className="w-8 h-8" />
+                    <span>Créer une nouvelle Feuille de Soins</span>
+                  </button>
+                </div>
+              )}
+
+              {/* Form */}
+              {showForm && (
+                <div className="bg-white rounded-2xl shadow-xl p-8 border-t-4 border-pink-500">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                      {editingId ? <Edit className="text-blue-600" /> : <Plus className="text-pink-600" />}
+                      {editingId ? 'Modifier la Feuille de Soins' : 'Nouvelle Feuille de Soins'}
+                    </h2>
+                    <button
+                      onClick={() => { resetForm(); setShowForm(false); }}
+                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                    >
+                      <X className="w-6 h-6 text-gray-500" />
+                    </button>
+                  </div>
+                  {feuilles.map((feuille) => (
+                    <div key={feuille._id} className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-pink-500">
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <h3 className="font-bold text-lg text-pink-600 mb-2">Informations Patient</h3>
+                            <p className="text-sm text-gray-600">ID: {feuille.patientId}</p>
+                            <p className="text-sm text-gray-500 mt-1">
+                              Date: {new Date(feuille.createdAt).toLocaleDateString('fr-FR')}
+                            </p>
+                          </div>
+                          
+                          <div>
+                            <h3 className="font-bold text-lg text-pink-600 mb-2">Praticien</h3>
+                            <p className="text-sm text-gray-800 font-medium">{feuille.signature.nomPraticien}</p>
+                            <p className="text-sm text-gray-500">
+                              Signé le: {new Date(feuille.signature.dateSignature).toLocaleDateString('fr-FR')}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div className="flex gap-2 ml-4">
+                          <button
+                            onClick={() => handleEdit(feuille)}
+                            className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                            title="Modifier"
+                          >
+                            <Edit className="w-5 h-5" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(feuille._id)}
+                            className="p-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                            title="Supprimer"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="mt-4">
+                        <h3 className="font-bold text-md text-gray-700 mb-2">Actes Réalisés</h3>
+                        <div className="space-y-2">
+                          {feuille.actes.map((acte, idx) => (
+                            <div key={idx} className="bg-gray-50 rounded-lg p-3 flex justify-between items-center">
+                              <div>
+                                <p className="font-medium text-gray-800">{acte.acte}</p>
+                                <p className="text-xs text-gray-500">
+                                  Dent: {acte.dent || 'N/A'} | Code: {acte.code} | Qté: {acte.quantite}
+                                </p>
+                              </div>
+                              <p className="font-bold text-pink-600">{acte.total} MAD</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="mt-4 grid grid-cols-3 gap-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-lg p-4">
+                        <div className="text-center">
+                          <p className="text-xs text-gray-500">Montant Total</p>
+                          <p className="font-bold text-lg text-gray-800">{feuille.facturation.montantTotal} MAD</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-xs text-gray-500">Part Patient</p>
+                          <p className="font-bold text-lg text-blue-600">{feuille.facturation.partPatient} MAD</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-xs text-gray-500">Part Assurance</p>
+                          <p className="font-bold text-lg text-green-600">{feuille.facturation.partAssurance} MAD</p>
+                        </div>
+                      </div>
+
+                      <div className="mt-3 flex items-center gap-4 text-sm">
+                        <span className={`px-3 py-1 rounded-full ${
+                          feuille.facturation.statutPaiement === 'Payé' 
+                            ? 'bg-green-100 text-green-700' 
+                            : 'bg-yellow-100 text-yellow-700'
+                        }`}>
+                          {feuille.facturation.statutPaiement}
+                        </span>
+                        <span className="text-gray-500">Mode: {feuille.facturation.modePaiement}</span>
+                      </div>
+
+                      {feuille.diagnostic && (
+                        <div className="mt-4 border-t pt-3">
+                          <p className="text-sm"><span className="font-semibold">Diagnostic:</span> {feuille.diagnostic}</p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Form */}
+              {showForm && (
+          <div className="max-w-4xl mx-auto p-8 bg-white rounded-2xl shadow-xl mb-6">
+            <h2 className="text-2xl font-bold text-pink-600 mb-6">
+              {editingId ? '✏️ Modifier la Feuille' : '➕ Nouvelle Feuille'}
+            </h2>
+      
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Liaison Patient */}
+        <section className="space-y-2">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
+            <Link2 /> Liaison avec le dossier patient
+          </h2>
+          <input
+            name="patientId"
+            value={form.patientId}
+            placeholder="ID du patient (ex: 665a1c9c1a8f123456789abc)"
+            className="w-full border rounded-lg p-3"
+            onChange={handleChange}
+            required
+          />
+        </section>
+
+        {/* Actes */}
+        <section className="space-y-2">
+          <h2 className="text-xl font-semibold">Acte dentaire réalisé</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input
+              name="acte"
+              value={form.acte}
+              placeholder="Type d'acte (ex: Détartrage)"
+              className="w-full border rounded-lg p-3"
+              onChange={handleChange}
+              required
+            />
+            <input
+              name="dent"
+              value={form.dent}
+              placeholder="Dent concernée (ex: Toutes)"
+              className="w-full border rounded-lg p-3"
+              onChange={handleChange}
+            />
+          </div>
+        </section>
+
+        {/* Diagnostic & Observations */}
+        <section className="space-y-2">
+          <h2 className="text-xl font-semibold">Diagnostic et Observations</h2>
+          <textarea
+            name="diagnostic"
+            value={form.diagnostic}
+            placeholder="Diagnostic"
+            className="w-full border rounded-lg p-3"
+            rows={2}
+            onChange={handleChange}
+          />
+          <textarea
+            name="observations"
+            value={form.observations}
+            placeholder="Observations"
+            className="w-full border rounded-lg p-3"
+            rows={2}
+            onChange={handleChange}
+          />
+        </section>
+
+        {/* Facturation */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <input 
+            name="montantTotal" 
+            value={form.montantTotal}
+            type="number"
+            placeholder="Montant total (MAD)" 
+            className="border p-3 rounded-lg" 
+            onChange={handleChange}
+            required
+          />
+          <input 
+            name="partPatient" 
+            value={form.partPatient}
+            type="number"
+            placeholder="Part patient (MAD)" 
+            className="border p-3 rounded-lg" 
+            onChange={handleChange}
+            required
+          />
+          <input 
+            name="partAssurance" 
+            value={form.partAssurance}
+            type="number"
+            placeholder="Part assurance (MAD)" 
+            className="border p-3 rounded-lg" 
+            onChange={handleChange}
+            required
+          />
+        </section>
+
+        {/* Mode et Statut de paiement */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-2">Mode de paiement</label>
+            <select
+              name="modePaiement"
+              value={form.modePaiement}
+              className="w-full border rounded-lg p-3"
+              onChange={handleChange}
+            >
+              <option value="Espèces">Espèces</option>
+              <option value="Carte">Carte</option>
+              <option value="Virement">Virement</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-2">Statut de paiement</label>
+            <select
+              name="statutPaiement"
+              value={form.statutPaiement}
+              className="w-full border rounded-lg p-3"
+              onChange={handleChange}
+            >
+              <option value="Payé">Payé</option>
+              <option value="Partiel">Partiel</option>
+              <option value="En attente">En attente</option>
+            </select>
+          </div>
+        </section>
+
+        {/* Signature */}
+        <section className="space-y-2">
+          <h2 className="text-xl font-semibold flex items-center gap-2">
+            <PenTool /> Signature électronique
+          </h2>
+          <input
+            name="nomPraticien"
+            value={form.nomPraticien}
+            placeholder="Nom du praticien"
+            className="w-full border rounded-lg p-3"
+            onChange={handleChange}
+            required
+          />
+        </section>
+
+        {/* Options modernes */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <label className="flex items-center gap-2">
+            <Send />
+            <input 
+              type="checkbox" 
+              name="envoyerPatient" 
+              checked={form.envoyerPatient} 
+              onChange={handleChange} 
+            />
+            Envoi automatique au patient
+          </label>
+
+          <label className="flex items-center gap-2">
+            <Bell />
+            <input 
+              type="checkbox" 
+              name="rappelPaiement" 
+              checked={form.rappelPaiement} 
+              onChange={handleChange} 
+            />
+            Rappel automatique de paiement
+          </label>
+        </section>
+
+        {/* Actions */}
+        <section className="flex flex-wrap gap-4">
+          <button type="button" className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-xl">
+            <FileDown /> Générer PDF
+          </button>
+
+          <button type="button" className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-xl">
+            <Clock /> Historique & versioning
+          </button>
+
+          <button type="button" className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-xl">
+            <Archive /> Archivage légal
+          </button>
+        </section>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-pink-600 text-white text-lg font-semibold py-3 rounded-xl hover:bg-pink-700 transition disabled:opacity-50"
+        >
+          {loading ? 'Enregistrement...' : editingId ? 'Modifier la feuille de soins' : 'Enregistrer la feuille de soins'}
+        </button>
+      </form>
+          </div>
+              )}
+            </>
+          )}
+        </main>
+      </div>
+    </div>
+  );
+}

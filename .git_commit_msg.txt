@@ -1,0 +1,1 @@
+Frontend: favicon/title + settings favicon; add RequireFeature and WhatsApp page; backend Dockerfile  

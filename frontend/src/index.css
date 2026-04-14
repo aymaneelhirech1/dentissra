@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  direction: ltr;
+}
+
+.input {
+  @apply border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none;
+}
+
+/* Watermark logo for pages (low opacity, centered, non-interactive) */
+.page-watermark::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* reference source image from src so Vite will resolve it */
+  background-image: url('../src/images/logo.avif');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 40vmin; /* responsive size */
+  opacity: 0.06; /* very low opacity */
+  pointer-events: none; /* don't block clicks */
+  z-index: 0;
+}
+
+/* Ensure page container positions children above watermark */
+.page-with-watermark {
+  position: relative;
+}
+
+.page-with-watermark > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Watermark specifically for printable documents */
+.print-watermark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 60vmin;
+  opacity: 0.06;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media print {
+  .print-watermark {
+    opacity: 0.08;
+  }
+}
+
+/* Theme variables for doctor dashboard */
+.theme-homme {
+  --accent-600: #0b7f7d; /* darker teal */
+  --accent-400: #2bb59f;
+  --accent-50: #e6fffe;
+  --accent-800: #044f4d;
+  --card-bg: linear-gradient(90deg,var(--accent-50),#ffffff);
+}
+
+.theme-femme {
+  --accent-600: #b91c6a; /* darker pink */
+  --accent-400: #ef476f;
+  --accent-50: #fff0f6;
+  --accent-800: #6f1233;
+  --card-bg: linear-gradient(90deg,var(--accent-50),#ffffff);
+}
+
+.theme-neutral {
+  --accent-600: #4f46e5;
+  --accent-400: #6d28d9;
+  --accent-50: #f3f0ff;
+  --accent-800: #2e1a8f;
+  --card-bg: linear-gradient(90deg,var(--accent-50),#ffffff);
+}
+
+/* Helper classes using the variables */
+.accent-btn {
+  background: linear-gradient(90deg,var(--accent-600),var(--accent-400));
+  color: white;
+}
+
+.accent-text { color: var(--accent-800); }
+.accent-muted { color: var(--accent-600); }
+
+/* Reusable card styles: colorful background based on theme, medium rounded edges */
+.card {
+  --card-padding: 1rem;
+  --card-radius: 1rem; /* medium rounded increased */
+  --card-shadow: 0 10px 30px rgba(2,6,23,0.08);
+
+  background: var(--card-bg);
+  padding: var(--card-padding);
+  border-radius: var(--card-radius);
+  box-shadow: var(--card-shadow);
+  border: 1px solid rgba(0,0,0,0.04);
+  border-left: 4px solid var(--accent-400);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(2,6,23,0.12);
+}
+
+/* Plain white card for compact list items */
+.card-plain {
+  background: rgba(255,255,255,0.96);
+  padding: 0.75rem;
+  border-radius: calc(var(--card-radius) - 0.25rem);
+  box-shadow: 0 6px 18px rgba(2,6,23,0.04);
+  border: 1px solid rgba(0,0,0,0.04);
+}
