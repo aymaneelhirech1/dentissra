@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Users, FileText, Calendar, Bell, CreditCard, BarChart3, LogOut } from "lucide-react";
-import { Card, CardContent } from "../../components/ui/card";
-import { Button } from "../../components/ui/button";
+import { Card, CardContent } from "../../Components/ui/card";
+import { Button } from "../../Components/ui/button";
 import Sidebar from "../../Components/Sidebar";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { toast } from "react-toastify";
