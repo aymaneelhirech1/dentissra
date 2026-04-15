@@ -20,31 +20,26 @@ import settingsRouter from "./routes/settings.route";
 import personnelRouter from "./routes/personnel.route";
 import whatsappRouter from "./routes/whatsapp.route";
 import doctorRouter from "./routes/doctor.route";
+import path from "path";
 
 dotenv.config();
 const app = express();
 
 connecDB();
+
+// CORS for development and frontend requests
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174", "http://localhost:5175", "http://localhost:5176", "http://localhost:5177", "http://localhost:5178", "http://localhost:5179", "http://localhost:5180", "http://localhost:5181", "http://localhost:5182", "http://localhost:5183", "http://localhost:5184", "http://localhost:5185", "http://localhost:5186", "http://localhost:5187"],
+    origin: "*",
     credentials: true,
   })
 );
 app.use(express.json());
 
-setInterval(() => {
-  console.log("Loading...");
+// Serve Static Files for Backend Assets if any
+// ...
 
-  checkUpcomingAppointments().catch(console.error);
-}, 60 * 1000);
-
-app.get("/", (req, res) => {
-  res.send(
-    `<h3 style="font-family: sans-serif">Server is running on port ${port}</h3>`
-  );
-});
-
+// API Routes
 app.use("/api/auth", userRouter);
 app.use("/api/supplier", supplierRouter);
 app.use("/api/prescription", prescriptionRouter);
@@ -62,6 +57,23 @@ app.use("/api/settings", settingsRouter);
 app.use("/api/personnel", personnelRouter);
 app.use("/api/whatsapp", whatsappRouter);
 app.use("/api/doctor", doctorRouter);
+
+// Serve Frontend Static Files
+const frontendPath = path.join(__dirname, "../frontend/dist");
+app.use(express.static(frontendPath));
+
+// Catch-all route to serve the Frontend's index.html
+app.get("*", (req, res) => {
+  if (req.path.startsWith("/api")) {
+    return res.status(404).json({ message: "API endpoint not found" });
+  }
+  res.sendFile(path.join(frontendPath, "index.html"));
+});
+
+setInterval(() => {
+  console.log("Loading...");
+  checkUpcomingAppointments().catch(console.error);
+}, 60 * 1000);
 
 const port = process.env.PORT || 5000;
 
