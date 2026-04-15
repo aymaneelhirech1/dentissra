@@ -105,99 +105,117 @@ export default function Login() {
   }, [errorMessage]);
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-blue-50 to-indigo-100" dir="ltr">
-      {/* Left side - Image */}
-      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 relative overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src={dentist}
-            alt="Dental Clinic"
-            className="object-cover h-full w-full"
-          />
-        </div>
-        {/* Text at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-8 z-10">
-          <h1 className="text-5xl font-bold mb-2 text-white">DentiSsra</h1>
-          <p className="text-lg text-white/90">Gestion moderne de cabinet dentaire</p>
+    <div className="h-screen flex overflow-hidden bg-white" dir="ltr">
+      {/* Left side - Image (Full Height, No Scroll) */}
+      <div className="hidden lg:flex w-1/2 bg-blue-600 relative">
+        <img
+          src={dentist}
+          alt="Dental Clinic"
+          className="object-cover h-full w-full"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        <div className="absolute bottom-10 left-10 z-10 text-white">
+          <h1 className="text-5xl font-bold tracking-tight">DentiSsra</h1>
+          <p className="text-xl opacity-90">Modern Dental Practice Management</p>
         </div>
       </div>
 
-      {/* Right side - Login Form */}
-      <div className="flex flex-1 items-center justify-center p-8">
-        <div className="max-w-md w-full">
-          {/* Mobile Logo */}
-          <div className="lg:hidden text-center mb-8">
-            <img src={logo} alt="DentiSsra" className="w-48 h-auto mx-auto mb-2" />
-            <p className="text-gray-600 mt-2">Gestion de cabinet dentaire</p>
-          </div>
-
-          <div className="bg-white p-8 rounded-2xl shadow-xl">
-            {/* Logo before Connexion */}
+      {/* Right side - Login Form (Compact) */}
+      <div className="flex flex-1 items-center justify-center p-4 sm:p-8 bg-gray-50">
+        <div className="w-full max-w-sm">
+          <div className="bg-white p-8 rounded-2xl shadow-2xl border border-gray-100">
+            {/* Minimalist Logo */}
             <div className="text-center mb-6">
-              <img src={logo} alt="DentiSsra" className="w-40 h-auto mx-auto" />
+              <img src={logo} alt="DentiSsra" className="w-32 h-auto mx-auto" />
+              <h2 className="text-2xl font-bold text-gray-900 mt-4 tracking-tight">Welcome Back</h2>
+              <p className="text-sm text-gray-500 mt-1">Please enter your details</p>
             </div>
-            
-            <h2 className="text-3xl font-bold text-gray-800 mb-2 text-center">
-              Connexion
-            </h2>
-            <p className="text-center text-gray-500 mb-8">
-              Bienvenue ! Connectez-vous à votre compte
-            </p>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4">
               {errorMessage && (
-                <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
+                <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-3 rounded text-xs animate-shake">
                   {errorMessage}
                 </div>
               )}
               
               <div>
-                <label className="block text-gray-700 font-medium mb-2" htmlFor="email">
-                  Email
+                <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1" htmlFor="email">
+                  Email Address
                 </label>
                 <input
                   type="email"
                   id="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
-                  placeholder="votre@email.com"
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none text-sm"
+                  placeholder="name@clinic.com"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-gray-700 font-medium mb-2" htmlFor="password">
-                  Mot de passe
+                <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1" htmlFor="password">
+                  Password
                 </label>
                 <input
                   type="password"
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none text-sm"
                   placeholder="••••••••"
                   required
                 />
               </div>
 
+              <div className="flex items-center justify-between text-xs pt-1">
+                <label className="flex items-center text-gray-500 cursor-pointer">
+                  <input type="checkbox" className="mr-2 rounded border-gray-300 text-blue-600" />
+                  Remember me
+                </label>
+                <a href="#" className="text-blue-600 hover:underline font-medium">Forgot password?</a>
+              </div>
+
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-white py-3 rounded-lg hover:from-indigo-700 hover:to-blue-700 transition font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700 transition-all font-bold text-sm shadow-lg hover:shadow-blue-200 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
               >
-                {loading ? 'Connexion en cours...' : 'Se connecter'}
+                {loading ? 'Authenticating...' : 'Sign In'}
               </button>
 
-              {/* Quick Login Buttons */}
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <p className="text-xs text-gray-500 text-center mb-3">Connexion rapide (Dev)</p>
-                <div className="grid grid-cols-3 gap-3">
+              {/* Quick Login - Compact Section */}
+              <div className="relative my-6 px-10">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t border-gray-200"></span>
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-white px-2 text-gray-400 font-medium tracking-widest">Demo</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                {['Admin', 'Secretary', 'Doctor'].map((role) => (
                   <button
+                    key={role}
                     type="button"
-                    onClick={() => quickLogin('admin')}
-                    disabled={loading}
-                    className="px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white text-sm rounded-lg hover:from-purple-600 hover:to-purple-700 transition font-medium shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={() => quickLogin(role.toLowerCase() as any)}
+                    className="py-2 px-1 text-[10px] font-bold uppercase tracking-tight bg-gray-50 border border-gray-100 rounded-lg hover:bg-blue-50 hover:text-blue-600 hover:border-blue-100 transition-all text-gray-600"
+                  >
+                    {role}
+                  </button>
+                ))}
+              </div>
+            </form>
+          </div>
+          <p className="text-center text-gray-400 text-[10px] mt-6 uppercase tracking-widest">
+            &copy; 2026 DentiSsra Management System
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
                   >
                     👨‍💼 Admin
                   </button>
