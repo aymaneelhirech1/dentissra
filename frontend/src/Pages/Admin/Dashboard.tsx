@@ -1,3 +1,4 @@
+import { API_URL } from '../../config';
 // src/pages/admin/Dashboard.tsx
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -138,22 +139,22 @@ export default function Dashboard() {
         inventoryRes,
         suppliersRes,
       ] = await Promise.all([
-        axios.get("http://localhost:5000/api/patient", {
+        axios.get(`${API_URL}/patient`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:5000/api/appointment", {
+        axios.get(`${API_URL}/appointment`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:5000/api/factures", {
+        axios.get(`${API_URL}/factures`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:5000/api/ordonnances", {
+        axios.get(`${API_URL}/ordonnances`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:5000/api/inventory", {
+        axios.get(`${API_URL}/inventory`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
-        axios.get("http://localhost:5000/api/supplier", {
+        axios.get(`${API_URL}/supplier`, {
           headers: { Authorization: `Bearer ${token}` },
         }),
       ]);
@@ -183,7 +184,7 @@ export default function Dashboard() {
 
       // fetch personnel and compute doctor / receptionist counts
       try {
-        const personnelRes = await axios.get("http://localhost:5000/api/personnel", {
+        const personnelRes = await axios.get(`${API_URL}/personnel`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         const personnel = Array.isArray(personnelRes.data) ? personnelRes.data : personnelRes.data?.data || [];
